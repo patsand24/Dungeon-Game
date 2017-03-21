@@ -50,30 +50,56 @@ def get_moves(player):
 
     return moves
 
+def draw_map(player):
+    print(" _"*5)
+    tile = "|{}"
+
+    for cell in CELLS:
+        x, y = cell
+        if x < 4:
+            line_end = ""
+            if cell == player:
+                output = tile.format("X")
+            else:
+                output = tile.format("_")
+        else:
+            line_end = "\n"
+            if cell == player:
+                output = tile.format("X|")
+            else:
+                output = tile.format("_|")
+        print(output, end=line_end)
+
+
+
+def game_loop():
+    monster, door, player = get_locations()
+
+    while True:
+        draw_map(player)
+        valid_moves = get_moves(player)
+        print("You're currently in room {}".format(player))  #fill with player position
+        print("You can move {}".format(", ".join(valid_moves)))  #fill with available moves
+        print("Enter QUIT to quit")
+
+        move = input("> ")
+        move = move.upper()
+
+        if move == "QUIT":
+            break
+        if move in valid_moves:
+            player = move_player(player, move)
+        else:
+            input("\n ** Walls are hard! Don't run into them! **\n")
+        clear_screen
+
 
 monster, door, player = get_locations()
 
-while True:
-    valid_moves = get_moves(player)
-    clear_screen()
-    print("Welcome to the Dungeon!")
-    print("You're currently in room {}".format(player))  #fill with player position
-    print("You can move {}".format(", ".join(valid_moves)))  #fill with available moves
-    print("Enter QUIT to quit")
 
-    move = input("> ")
-    move = move.upper()
-
-    if move == "QUIT":
-        break
-    if move in valid_moves:
-        player = move_player(player, move)
-    else:
-        print("\n ** Walls are hard! Don't run into them! **\n")
-        continue
-
-    # Good move? Change the player position
-    # Bad move? Don't change anything!
-    # On the door? They win!
-    # On the monster? They lose!
-    # Otherwise, Loop again
+valid_moves = get_moves(player)
+clear_screen()
+print("Welcome to the Dungeon!")
+input("Press return to start!")
+clear_screen()
+game_loop()
